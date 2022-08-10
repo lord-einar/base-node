@@ -12,7 +12,8 @@
     "nodemon": "^2.0.19"
   },
   "scripts": {
-    "start": "nodemon app"
+    "start": "node app",
+    "dev": "nodemon app"
   },
   "keywords": [],
   "author": "",
