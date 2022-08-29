@@ -2,11 +2,18 @@ const { request, response } = require("express");
 const bcryptjs = require("bcryptjs");
 const Usuario = require("../models/usuario");
 
-const usuariosGET = (req, res = response) => {
-  const query = req.query;
+const usuariosGET = async (req, res = response) => {
+  const { limite = 5, desde = 0 } = req.query;
+  const query = { estado: true };
+
+  const [total, usuarios] = await Promise.all([
+    Usuario.countDocuments(query),
+    Usuario.find(query).skip(Number(desde)).limit(Number(limite)),
+  ]);
 
   res.json({
-    msg: "Hola mundo - GET - Controller",
+    total,
+    usuarios
   });
 };
 
@@ -34,18 +41,19 @@ const usuariosPUT = async (req = request, res = response) => {
     resto.password = bcryptjs.hashSync(password, salt);
   }
 
-  const usuario = await Usuario.findByIdAndUpdate(id, resto, {new: true});
+  const usuario = await Usuario.findByIdAndUpdate(id, resto, { new: true });
 
   res.json({
-    msg: "Hola mundo - PUT - Controller",
-    usuario,
+    usuario
   });
 };
 
-const usuariosDELETE = (req, res = response) => {
-  res.json({
-    msg: "Hola mundo - DELETE - Controller",
-  });
+const usuariosDELETE = async (req, res = response) => {
+const {id} = req.params;
+
+const usuario = await Usuario.findByIdAndUpdate(id, { estado: false}, {new: true})
+
+  res.json(usuario);
 };
 
 module.exports = {
