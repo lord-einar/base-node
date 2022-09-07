@@ -53,7 +53,9 @@ const {id} = req.params;
 
 const usuario = await Usuario.findByIdAndUpdate(id, { estado: false}, {new: true})
 
-  res.json(usuario);
+  res.json({
+    usuario,
+  });
 };
 
 module.exports = {
